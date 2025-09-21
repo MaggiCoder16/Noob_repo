@@ -38,7 +38,7 @@ jobs:
 
       - name: Run Bot
         run: |
-          python3 -u user_interface.py "matchmaking" 
+          python3 -u user_interface.py "upgrade"
 
   pensive-puffer:
     name: run bot Bullet_bot_0526
@@ -72,4 +72,4 @@ jobs:
 
       - name: Run Bot
         run: |
-          python3 -u user_interface.py "matchmaking" 
+          python3 -u user_interface.py "upgrade"
