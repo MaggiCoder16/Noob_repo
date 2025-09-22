@@ -82,7 +82,7 @@ gaviota:
 
 opening_books:
   enabled: true 
-  priority: 10000
+  priority: 300
   books:
 
     standard_white_rated:
