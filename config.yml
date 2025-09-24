@@ -6,13 +6,13 @@ engines:
     name: "stockfish"                     # Binary name of the engine to use.
     ponder: true                          # Think on opponent's time.
     silence_stderr: false                 # Suppresses stderr output.
-    move_overhead_multiplier: 1.0        # Increase if your bot flags games too often. Default move overhead is 1 second per 1 minute initital time.
+    move_overhead_multiplier: 1.0         # Increase if your bot flags games too often. Default move overhead is 1 second per 1 minute initital time.
     uci_options:                          # Arbitrary UCI options passed to the engine.
       Threads: 4                          # Max CPU threads the engine can use.
       Hash: 4096                           # Max memory (in megabytes) the engine can allocate.
-      Move Overhead: 200                  # Increase if your bot flags games too often.
+      Move Overhead: 300                  # Increase if your bot flags games too often.
     limits:                               # Limits that end the move calculation early.
-  #    time: 1.0                           # Max time per move in seconds.
+      time: 3.0                           # Max time per move in seconds.
 #      depth: 26                           # Max depth per move.
 #      nodes: 4000000                      # Max nodes per move.
   variants:                               # Engine used for variants when no suitable special engine is configured.
@@ -212,8 +212,32 @@ opening_books:
       selection: best_move
       allow_repetitions: true
       names:
-        - crazy
+        - threecheck      
 
+    atomic_white:
+      selection: best_move
+      names:
+        - atomic
+
+    atomic_black:
+      selection: best_move
+      allow_repetitions: true
+      names:
+        - atomic  
+
+    horde_white:
+      selection: best_move
+      allow_repetitions: true
+      names:
+        - hordewhite
+        - hordenoob
+
+    horde_black:
+      selection: best_move
+      allow_repetitions: false
+      names:
+        - hordeblack
+        - hordenoob
 #   'antichess', 'atomic', 'chess960', 'crazyhouse', 'horde', 'kingofthehill', 'racingkings' and '3check' as well.
 #   Append '_white', '_black' or '_human' to use the engine only as the specific color or against humans.
 
@@ -278,7 +302,7 @@ resign:
   min_rating: 2700
 
 challenge:                                # Incoming challenges.
-  concurrency: 3                          # Number of games to play simultaneously.
+  concurrency: 2                          # Number of games to play simultaneously.
   max_takebacks: 5                        # Maximum number of takebacks granted to a human.
   bullet_with_increment_only: false       # Whether bullet games against BOTs should only be accepted with increment.
 # min_increment: 0                        # Minimum amount of increment to accept a challenge.
@@ -365,5 +389,21 @@ books:                                    # Names of the opening books (to be us
   Optimus2502: "./engines/OPTIMUS2502.bin"
   Optimus4: "./engines/OPTIMUS4.bin"
   Chess960: "./engines/chess960.bin"
-  Anti: "./engines/anti_book.bin"
-  crazy: "./engines/crazyhouse_book.bin"
+  crazywhite: "./engines/crazy_white.bin"
+  crazyblack: "./engines/crazy_black.bin"
+  kothwhite: "./engines/koth_white.bin"
+  kothblack: "./engines/koth_black.bin"
+  black: "./engines/std_black.bin"
+  white: "./engines/std_white.bin"
+  antiwhite: "./engines/whiteanti.bin"
+  antiblack: "./engines/blackanti.bin"
+  threecheck: "./engines/threecheck_book.bin"
+  atomic: "./engines/atomic.bin"
+  horde: "./engines/horde.bin"
+  hordeblack: "./engines/black_horde.bin"
+  hordenoob: "./engines/horde.bin"
+  hordewhite: "./engines/horde_best.bin"
+  DefaultBook: "./engines/Book2.bin"
+  BackupBook: "./engines/Book3.bin"
+
+  
