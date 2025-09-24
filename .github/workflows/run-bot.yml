@@ -6,7 +6,7 @@ on:
     - cron: '0 */5 * * *'
 
 jobs:
-  cocky-crab:
+  team-bot:
     name: run bot team_bot_08512
     runs-on: ubuntu-latest
 
@@ -38,9 +38,9 @@ jobs:
 
       - name: Run Bot
         run: |
-          python3 -u user_interface.py "tournament IRP4dKjC THE_NecroMinds"
+          python3 -u user_interface.py "matchmaking"
 
-  pensive-puffer:
+  bullet-bot:
     name: run bot Bullet_bot_0526
     runs-on: ubuntu-latest
 
@@ -72,4 +72,4 @@ jobs:
 
       - name: Run Bot
         run: |
-          python3 -u user_interface.py "tournament IRP4dKjC THE_NecroMinds"
+          python3 -u user_interface.py "matchmaking"
