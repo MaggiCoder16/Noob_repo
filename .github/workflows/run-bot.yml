@@ -87,7 +87,7 @@ jobs:
       cancel-in-progress: false
 
     env:
-      TOKEN: ${{ secrets.TOKEN }}
+      TOKEN: ${{ secrets.LICHESS_BOT }}
 
     steps:
       - name: Setup Actions
