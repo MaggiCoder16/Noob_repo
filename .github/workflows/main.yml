@@ -1,7 +1,7 @@
 name: Sync suprabot1 to mainlassobot
 
 on:
-  workflow_dispatch: # chạy thủ công
+  workflow_dispatch:
 
 jobs:
   sync:
