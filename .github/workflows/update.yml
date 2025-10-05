@@ -1,0 +1,59 @@
+name: botli ki specific files ko sync karle gavar
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */2 * * *"
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout our repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.PAT_TOKEN }}
+
+      - name: Configure Git identity
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+
+      - name: Add BotLi remote
+        run: |
+          git remote add botli https://github.com/Torom/BotLi.git || echo "botli sala remote already exists"
+          git fetch botli main
+
+      - name: Sync specific BotLi files sale
+        run: |
+          files=(
+            "game.py"
+            "game_manager.py"
+            "lichess_game.py"
+            "api.py"
+            "enums.py"
+            "engine.py"
+            "botli_dataclasses.py"
+            "challenge_validator.py"
+            "challenger.py"
+            "config.py"
+            "configs.py"
+            "matchmaking.py"
+            "user_interface.py"
+            "opponents.py"
+          )
+
+          for f in "${files[@]}"; do
+            echo "Syncing $f"
+            git checkout botli/main -- "$f" || echo "File $f not found in BotLi"
+          done
+
+          git add .
+          git commit -m "Sync BotLi files" || echo "No changes to commit gadhe"
+
+      - name: Push changes
+        run: git push origin main
