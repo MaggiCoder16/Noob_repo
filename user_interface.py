@@ -55,6 +55,7 @@ class User_Interface:
             self.api.append_user_agent(username)
             await self._handle_bot_status(account.get("title"), allow_upgrade)
             await self._test_engines()
+            await self._download_online_blacklists()
 
             self.game_manager = Game_Manager(self.api, self.config, username)
             self.game_manager_task = asyncio.create_task(self.game_manager.run())
