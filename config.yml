@@ -318,12 +318,17 @@ challenge:                                # Incoming challenges.
     - kingOfTheHill
     - racingKings
     - threeCheck
-  time_controls:                          # Speeds or time controls in initial_minutes+increment_seconds format to accept.
+  bot_time_controls:                      # Speeds or time controls in initial_minutes+increment_seconds format to accept against BOTs.
     - bullet
     - blitz
     - rapid
 #   - classical
 #   - 25+0
+  human_time_controls:                    # Speeds or time controls in initial_minutes+increment_seconds format to accept against humans.
+    - bullet
+    - blitz
+    - rapid
+    - classical
   bot_modes:                              # Game modes to accept against BOTs.
     - casual                              # Unrated games.
     - rated                               # Rated games
@@ -380,6 +385,9 @@ whitelist:                                # List of users whose challenges are a
 blacklist:                                # List of users who are not challenged and whose challenges are declined.
 # - Username1
 # - Username2
+online_blacklists:
+# - Username1
+# - Username2
 
 books:                                    # Names of the opening books (to be used above in the opening_books section) and paths to the opening books.
   DefaultBook: "./engines/Book2.bin"
@@ -403,5 +411,3 @@ books:                                    # Names of the opening books (to be us
   hordewhite: "./engines/horde_best.bin"
   DefaultBook: "./engines/Book2.bin"
   BackupBook: "./engines/Book3.bin"
-
-  
