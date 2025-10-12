@@ -1,4 +1,4 @@
-name: botli ki specific files ko sync karle gavar
+name: BotLi files ko sync karna haiiiii
 
 on:
   workflow_dispatch:
@@ -23,9 +23,9 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
 
-      - name: Add BotLi remote
+      - name: Add BotLi remote and fetch
         run: |
-          git remote add botli https://github.com/Torom/BotLi.git || echo "botli sala remote already exists"
+          git remote add botli https://github.com/Torom/BotLi.git || echo "BotLi remote already exists"
           git fetch botli main
 
       - name: Sync Python files
@@ -47,15 +47,29 @@ jobs:
             echo "Merging BotLi updates into chatter.py..."
             cp chatter.py chatter_custom.py
             git checkout botli/main -- chatter.py
-            awk '/^# CUSTOM FUNCTION START$/,/^# CUSTOM FUNCTION END$/' chatter_custom.py >> chatter.py
+
+            awk '
+              BEGIN { in_custom=0 }
+              /^    # CUSTOM FUNCTION START$/ { in_custom=1; print; next }
+              /^    # CUSTOM FUNCTION END$/ { in_custom=0; print; next }
+              in_custom { next }
+              { print }
+            ' chatter.py > chatter_tmp.py
+
+            awk '
+              /^    # CUSTOM FUNCTION START$/ { in_custom=1 }
+              in_custom { print; if (/^    # CUSTOM FUNCTION END$/) in_custom=0 }
+            ' chatter_custom.py >> chatter_tmp.py
+
+            mv chatter_tmp.py chatter.py
             rm -f chatter_custom.py
           else
-            echo "chatter.py does not exist locally, fetching from BotLi"
+            echo "chatter.py does not exist locally, fetching from BotLi..."
             git checkout botli/main -- chatter.py
           fi
 
           git add .
-          git commit -m "Sync BotLi Python files (merged chatter.py custom functions)" || echo "No changes to commit gadhe"
+          git commit -m "Sync BotLi Python files (merged chatter.py custom functions)" || echo "No changes to commit"
 
       - name: Push changes
         run: git push origin main
