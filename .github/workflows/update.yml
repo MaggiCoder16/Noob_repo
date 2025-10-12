@@ -28,32 +28,34 @@ jobs:
           git remote add botli https://github.com/Torom/BotLi.git || echo "botli sala remote already exists"
           git fetch botli main
 
-      - name: Sync specific BotLi files sale
+      - name: Sync Python files
         run: |
-          files=(
-            "game.py"
-            "game_manager.py"
-            "lichess_game.py"
-            "api.py"
-            "enums.py"
-            "engine.py"
-            "botli_dataclasses.py"
-            "challenge_validator.py"
-            "challenger.py"
-            "config.py"
-            "configs.py"
-            "matchmaking.py"
-            "user_interface.py"
-            "opponents.py"
-          )
-
-          for f in "${files[@]}"; do
-            echo "Syncing $f"
-            git checkout botli/main -- "$f" || echo "File $f not found in BotLi"
+          py_files=$(git ls-tree -r --name-only botli/main | grep '\.py$' | grep -v 'chatter.py')
+          for f in $py_files; do
+            echo "Syncing $f with patch..."
+            git diff botli/main -- "$f" > update.patch
+            if [ -s update.patch ]; then
+              git apply update.patch
+              echo "Applied updates to $f"
+            else
+              echo "No updates for $f"
+            fi
+            rm -f update.patch
           done
 
+          if [ -f chatter.py ]; then
+            echo "Merging BotLi updates into chatter.py..."
+            cp chatter.py chatter_custom.py
+            git checkout botli/main -- chatter.py
+            awk '/^# CUSTOM FUNCTION START$/,/^# CUSTOM FUNCTION END$/' chatter_custom.py >> chatter.py
+            rm -f chatter_custom.py
+          else
+            echo "chatter.py does not exist locally, fetching from BotLi"
+            git checkout botli/main -- chatter.py
+          fi
+
           git add .
-          git commit -m "Sync BotLi files" || echo "No changes to commit gadhe"
+          git commit -m "Sync BotLi Python files (merged chatter.py custom functions)" || echo "No changes to commit gadhe"
 
       - name: Push changes
         run: git push origin main
