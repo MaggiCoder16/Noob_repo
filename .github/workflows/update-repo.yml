@@ -23,16 +23,21 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
 
-      - name: Add Maggi remote
+      - name: Add Maggi remote and fetch
         run: |
           git remote add maggi https://github.com/MaggiCoder16/Tasty-Maggi.git || echo "Maggi already added"
           git fetch maggi main
 
-      - name: Merge Maggi into our repo
+      - name: Sync all files from Maggi
         run: |
-          git merge maggi/main --allow-unrelated-histories -X ours --no-edit || true
-          git merge maggi/main -X ours --no-edit || true
-          git commit -am "Sync Maggi updates (ours wins on conflicts)" || echo "No changes to commit"
+          files=$(git ls-tree -r --name-only maggi/main)
+          for f in $files; do
+            echo "Syncing $f from Maggi..."
+            git checkout maggi/main -- "$f"
+          done
+
+          git add .
+          git commit -m "Sync all files from Maggi" || echo "No changes to commit"
 
       - name: Push changes
         run: git push origin main
