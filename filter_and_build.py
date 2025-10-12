@@ -6,13 +6,8 @@ import chess.pgn
 import chess.polyglot
 import chess.variant
 
-BOTS = ["NimsiluBot", "ToromBot"]
-VARIANT = "crazyhouse"
-MIN_ELO = 2250
-CHUNK_SIZE = 5000
-REQUEST_TIMEOUT = 120
-SLEEP_BETWEEN_CHUNKS = 0.4
-MAX_PLY = 60
+VARIANT = "horde"         
+MAX_PLY = 50
 MAX_BOOK_WEIGHT = 2520
 MIN_RATING = 2400
 
@@ -98,11 +93,35 @@ def build_book(bin_path: str):
         variant_tag = (game.headers.get("Variant", "") or "").lower()
         if VARIANT not in variant_tag:
             continue
+        white = game.headers.get("White", "")
+        black = game.headers.get("Black", "")
+        if white not in ALLOWED_BOTS and black not in ALLOWED_BOTS:
+            continue
 
-        board = chess.variant.CrazyhouseBoard()
-        result = game.headers.get("Result", "*")
+        try:
+            white_elo = int(game.headers.get("WhiteElo", 0))
+            black_elo = int(game.headers.get("BlackElo", 0))
+        except ValueError:
+            continue
+        if white_elo < MIN_RATING or black_elo < MIN_RATING:
+            continue
 
-        for ply, move in enumerate(game.mainline_moves()):
+        mainline_moves = list(game.mainline_moves())
+        if not mainline_moves or mainline_moves[0].uci() != "e2e3":
+            continue
+
+        kept += 1
+        board = chess.variant.AntichessBoard()
+
+        result = game.headers.get("Result", "")
+        if result == "1-0":
+            winner = chess.WHITE
+        elif result == "0-1":
+            winner = chess.BLACK
+        else:
+            winner = None
+
+        for ply, move in enumerate(mainline_moves):
             if ply >= MAX_PLY:
                 break
             try:

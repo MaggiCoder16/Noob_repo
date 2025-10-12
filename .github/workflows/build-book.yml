@@ -1,4 +1,4 @@
-name: Build Crazyhouse Book
+name: Build Book
 
 on:
   workflow_dispatch:
@@ -17,7 +17,6 @@ jobs:
       - run: python standard-bin.py
       - uses: actions/upload-artifact@v4
         with:
-          name: crazyhouse-book
+          name: torombooks
           path: |
-            crazyhouse_games.pgn
-            crazyhouse_book.bin
+            torombot_draws_3000.pgn
