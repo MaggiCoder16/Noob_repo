@@ -76,7 +76,7 @@ jobs:
       - name: Run Bot
         run: |
           echo "Starting bot..."
-          python3 -u user_interface.py "tournament bdaQYPEt royalracer-fans"          
+          python3 -u user_interface.py "matchmaking"          
 
   bullet-bot:
     name: run bot Bullet_bot_0526
@@ -148,4 +148,4 @@ jobs:
       - name: Run Bot
         run: |
           echo "Starting bot..."
-          python3 -u user_interface.py "tournament bdaQYPEt royalracer-fans"          
+          python3 -u user_interface.py "matchmaking"          
