@@ -1,4 +1,4 @@
-name: Sync Maggi Python Files
+name: Sync Maggi Files
 
 on:
   workflow_dispatch:
@@ -28,16 +28,16 @@ jobs:
           git remote add maggi https://github.com/MaggiCoder16/Tasty-Maggi.git || echo "Maggi already added"
           git fetch maggi main
 
-      - name: Sync Python files
+      - name: Sync Python, YAML, and TXT files
         run: |
-          py_files=$(git ls-tree -r --name-only maggi/main | grep '\.py$')
-          for f in $py_files; do
+          files=$(git ls-tree -r --name-only maggi/main | grep -E '\.(py|yml|yaml|txt)$')
+          for f in $files; do
             echo "Syncing $f from Maggi..."
             git checkout maggi/main -- "$f"
           done
 
           git add .
-          git commit -m "Sync Maggi Python files" || echo "No changes to commit"
+          git commit -m "Sync Maggi Python, YAML, and TXT files" || echo "No changes to commit"
 
       - name: Push changes
         run: git push origin main
