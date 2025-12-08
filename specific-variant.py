@@ -6,18 +6,14 @@ import chess.pgn
 import chess.polyglot
 import chess.variant
 
-VARIANT = "chess960"
+VARIANT = "threeCheck"
 MAX_PLY = 50
 MAX_BOOK_WEIGHT = 2520
-MIN_RATING = 2400
+MIN_RATING = 2300
 
-BOOK_OUTPUT = "chess960.bin"
+BOOK_OUTPUT = "threecheck.bin"
 BOTS = {
-    "LeelaMultiPoss","JAXMAN_N","PINEAPPLEMASK","Chrysogenum","Ghost_HunteR2998",
-    "strain-on-veins","InvinxibleFlxsh","VEER-OMEGA-BOT","TestingBot1","RedHotBot",
-    "ToromBot","Bharat_royals","pangubot","ElPeonElectrico","DarkOnBot","MaggiChess16",
-    "YoBot_v2","TacticalBot","Bot1nokk","tbhOnBot","Speeedrunchessgames","NecroMindX",
-    "Endogenetic-Bot","Exogenetic-Bot"
+    "ToromBot", "Ghost_HunteR2998", "PINEAPPLEMASK", "MaggiChess16", "tbhOnBot", "VEER-OMEGA-BOT"
 }
 
 
@@ -78,7 +74,7 @@ def key_hex(board: chess.Board) -> str:
     return f"{chess.polyglot.zobrist_hash(board):016x}"
 
 
-def stream_user_games(username: str, variant: str = VARIANT, max_per_request: int = 300):
+def stream_user_games(username: str, variant: str = VARIANT, max_per_request: int = 1000):
     url = f"https://lichess.org/api/games/user/{username}"
     headers = {"Accept": "application/x-chess-pgn"}
     session = requests.Session()
@@ -155,13 +151,13 @@ def build_book(bin_path: str):
                     if (game.headers.get("SetUp", "") or "") == "1" and game.headers.get("FEN"):
                         starting_fen = game.headers.get("FEN")
                     if starting_fen:
-                        board = chess.Board(fen=starting_fen, chess960=True)
+                        board = chess.variant.ThreeCheckBoard(fen=starting_fen)
                     else:
                         try:
                             b = game.board()
-                            board = chess.Board(b.fen(), chess960=True)
+                            board = chess.variant.ThreeCheckBoard(fen=b.fen())
                         except Exception:
-                            board = chess.Board(chess960=True)
+                            board = chess.variant.ThreeCheckBoard()
                     result = game.headers.get("Result", "")
                     if result == "1-0":
                         winner = chess.WHITE
